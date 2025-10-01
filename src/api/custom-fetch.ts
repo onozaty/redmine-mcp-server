@@ -9,7 +9,11 @@ export const customFetch = async (url: string, options?: RequestInit) => {
     ...options?.headers,
   };
 
-  const fullUrl = new URL(url, config.redmineUrl).toString();
+  // Ensure redmineUrl ends with a slash for proper URL joining
+  const baseUrl = config.redmineUrl.endsWith('/') ? config.redmineUrl : `${config.redmineUrl}/`;
+  // Remove leading slash from url to ensure proper joining
+  const relativePath = url.startsWith('/') ? url.slice(1) : url;
+  const fullUrl = new URL(relativePath, baseUrl).toString();
 
   console.error(`Fetching URL: ${fullUrl}`);
 
