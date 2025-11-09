@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "gen": "rm -rf src/__generated__ && orval && node post-generate.js",
-    "build": "tsdown"
+    "build": "pnpm gen && tsdown"
   },
   "repository": {
     "type": "git",
