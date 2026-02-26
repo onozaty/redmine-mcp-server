@@ -24,6 +24,7 @@ https://github.com/user-attachments/assets/8f551082-6982-4513-8fe7-b0f111be982d
 
 - 📋 **Comprehensive API Coverage**: Supports all functions available in Redmine's REST API
 - 🔒 **Read-Only Mode**: Supports safe data reference mode
+- 🎛️ **Feature Flags**: Selectively disable tool groups via environment variables
 
 ## Prerequisites
 
@@ -49,6 +50,57 @@ The following environment variables are required (specified in MCP client config
 - **REDMINE_MCP_READ_ONLY** (Optional): Enable read-only mode
   - `true`: Read-only mode (disables data modification operations)
   - `false` or unset: Allow all operations (default)
+
+#### Feature Flags (Optional)
+
+You can selectively disable tool groups to reduce the number of tools loaded by the MCP server. By default, all features are **enabled**. Set any of the following to `true` to disable a group:
+
+| Environment Variable | Tools Disabled |
+|---|---|
+| `REDMINE_MCP_DISABLE_RELATIONS` | Issue relations (list, create, show, delete) |
+| `REDMINE_MCP_DISABLE_TIME_ENTRIES` | Time entries & activities (list, create, show, update, delete) |
+| `REDMINE_MCP_DISABLE_VERSIONS` | Versions (list, create, show, update, delete) |
+| `REDMINE_MCP_DISABLE_WATCHERS` | Watchers (add, remove) |
+| `REDMINE_MCP_DISABLE_WIKI` | Wiki pages (list, show, create/update, delete) |
+| `REDMINE_MCP_DISABLE_NEWS` | News (list, show, create, update, delete) |
+| `REDMINE_MCP_DISABLE_USERS` | User management (list, show, create, update, delete, current user) |
+| `REDMINE_MCP_DISABLE_GROUPS` | Group management (list, show, create, update, delete, add/remove user) |
+| `REDMINE_MCP_DISABLE_MEMBERSHIPS` | Memberships (list, show, create, update, delete) |
+| `REDMINE_MCP_DISABLE_ATTACHMENTS` | Attachments (show, update, delete, upload/download, thumbnails) |
+| `REDMINE_MCP_DISABLE_FILES` | Files (list, create) |
+| `REDMINE_MCP_DISABLE_PROJECTS` | Project management (list, show, create, update, delete, archive/unarchive, close/reopen) |
+
+#### Full Configuration Example
+
+You can copy and paste this into your MCP client configuration (e.g., `claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "redmine": {
+      "command": "npx",
+      "args": ["-y", "@onozaty/redmine-mcp-server"],
+      "env": {
+        "REDMINE_URL": "https://your-redmine.example.com",
+        "REDMINE_API_KEY": "your-api-key-here",
+        "REDMINE_MCP_READ_ONLY": "false",
+        "REDMINE_MCP_DISABLE_RELATIONS": "false",
+        "REDMINE_MCP_DISABLE_TIME_ENTRIES": "false",
+        "REDMINE_MCP_DISABLE_VERSIONS": "false",
+        "REDMINE_MCP_DISABLE_WATCHERS": "false",
+        "REDMINE_MCP_DISABLE_WIKI": "false",
+        "REDMINE_MCP_DISABLE_NEWS": "false",
+        "REDMINE_MCP_DISABLE_USERS": "false",
+        "REDMINE_MCP_DISABLE_GROUPS": "false",
+        "REDMINE_MCP_DISABLE_MEMBERSHIPS": "false",
+        "REDMINE_MCP_DISABLE_ATTACHMENTS": "false",
+        "REDMINE_MCP_DISABLE_FILES": "false",
+        "REDMINE_MCP_DISABLE_PROJECTS": "false"
+      }
+    }
+  }
+}
+```
 
 ### MCP Client Configuration
 
