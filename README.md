@@ -24,6 +24,7 @@ https://github.com/user-attachments/assets/8f551082-6982-4513-8fe7-b0f111be982d
 
 - 📋 **Comprehensive API Coverage**: Supports all functions available in Redmine's REST API
 - 🔒 **Read-Only Mode**: Supports safe data reference mode
+- 🔧 **Tool Filtering**: Control which tools are available using regex patterns
 
 ## Prerequisites
 
@@ -49,6 +50,13 @@ The following environment variables are required (specified in MCP client config
 - **REDMINE_MCP_READ_ONLY** (Optional): Enable read-only mode
   - `true`: Read-only mode (disables data modification operations)
   - `false` or unset: Allow all operations (default)
+- **REDMINE_MCP_TOOLS_ALLOW_PATTERN** (Optional): Regex pattern to allow only matching tools
+  - Example: `^get` (enable only tools starting with "get")
+  - If unset, all tools are allowed (subject to other settings)
+- **REDMINE_MCP_TOOLS_DENY_PATTERN** (Optional): Regex pattern to disable matching tools
+  - Example: `^delete` (disable all tools starting with "delete")
+  - If unset, no tools are denied (subject to other settings)
+  - Deny pattern takes priority over allow pattern
 
 ### MCP Client Configuration
 
@@ -205,6 +213,60 @@ This MCP server comprehensively supports the functions provided by [Redmine's RE
 ### Read-Only Mode
 
 By setting `REDMINE_MCP_READ_ONLY=true`, you can disable data modification operations. This allows safe data reference.
+
+### Tool Filtering
+
+You can control which tools are available using the following environment variables:
+
+- **`REDMINE_MCP_TOOLS_ALLOW_PATTERN`**: Only tools whose names match this regex are enabled.
+  - Example: `^get` enables only read-oriented tools like `getIssues`, `getProjects`, etc.
+- **`REDMINE_MCP_TOOLS_DENY_PATTERN`**: Tools whose names match this regex are disabled.
+  - Example: `^delete` disables all delete operations.
+
+When both are set, deny takes priority. These can also be combined with `REDMINE_MCP_READ_ONLY`.
+
+**Example: Allow only issue-related tools**
+```json
+"env": {
+  "REDMINE_MCP_TOOLS_ALLOW_PATTERN": "Issue"
+}
+```
+
+**Example: Disable all delete and archive operations**
+```json
+"env": {
+  "REDMINE_MCP_TOOLS_DENY_PATTERN": "^(delete|archive)"
+}
+```
+
+### Available Tools
+
+The following tools are available (based on [Redmine REST API](https://www.redmine.org/projects/redmine/wiki/rest_api) categories):
+
+| Category | Tools |
+|---|---|
+| Issues | getIssues, getIssue, createIssue, updateIssue, deleteIssue, addWatcher, removeWatcher, addRelatedIssue, removeRelatedIssue |
+| Projects | getProjects, getProject, createProject, updateProject, deleteProject, archiveProject, unarchiveProject, closeProject, reopenProject |
+| Project Memberships | getMemberships, getMembership, createMembership, updateMembership, deleteMembership |
+| Users | getUsers, getUser, createUser, updateUser, deleteUser, getCurrentUser |
+| Time Entries | getTimeEntries, getTimeEntry, createTimeEntry, updateTimeEntry, deleteTimeEntry |
+| News | getNewsList, getNewsListByProject, getNews, createNews, updateNews, deleteNews |
+| Issue Relations | getIssueRelations, getIssueRelation, createIssueRelation, deleteIssueRelation |
+| Versions | getVersionsByProject, getVersions, createVersion, updateVersion, deleteVersion |
+| Wiki Pages | getWikiPages, getWikiPage, getWikiPageByVersion, updateWikiPage, deleteWikiPage |
+| Queries | getQueries |
+| Attachments | getAttachment, updateAttachment, deleteAttachment, uploadAttachmentFromLocalFile, uploadAttachmentFromBase64Content, downloadAttachmentToLocalFile, downloadAttachmentAsBase64Content, downloadThumbnailToLocalFile, downloadThumbnailAsBase64Content |
+| Issue Statuses | getIssueStatuses |
+| Trackers | getTrackers |
+| Enumerations | getIssuePriorities, getTimeEntryActivities, getDocumentCategories |
+| Issue Categories | getIssueCategories, getIssueCategory, createIssueCategory, updateIssueCategory, deleteIssueCategory |
+| Roles | getRoles, getRole |
+| Groups | getGroups, getGroup, createGroup, updateGroup, deleteGroup, addUserToGroup, removeUserFromGroup |
+| Custom Fields | getCustomFields |
+| Search | search |
+| Files | getFiles, createFile |
+| My Account | getMyAccount, updateMyAccount |
+| Journals | updateJournal |
 
 ## License
 

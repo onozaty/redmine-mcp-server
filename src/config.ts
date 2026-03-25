@@ -6,7 +6,23 @@ export interface ServerConfig {
   readOnlyMode: boolean;
   redmineUrl: string;
   redmineApiKey: string;
+  toolsAllowPattern: RegExp | null;
+  toolsDenyPattern: RegExp | null;
 }
+
+const compilePattern = (
+  value: string | undefined,
+  varName: string,
+): RegExp | null => {
+  if (!value) return null;
+  try {
+    return new RegExp(value);
+  } catch (e) {
+    throw new Error(
+      `Invalid regex in ${varName}: "${value}" - ${(e as Error).message}`,
+    );
+  }
+};
 
 /**
  * Load configuration from environment variables
@@ -24,10 +40,21 @@ const loadConfig = (): ServerConfig => {
     throw new Error("REDMINE_API_KEY environment variable is not set");
   }
 
+  const toolsAllowPattern = compilePattern(
+    process.env.REDMINE_MCP_TOOLS_ALLOW_PATTERN,
+    "REDMINE_MCP_TOOLS_ALLOW_PATTERN",
+  );
+  const toolsDenyPattern = compilePattern(
+    process.env.REDMINE_MCP_TOOLS_DENY_PATTERN,
+    "REDMINE_MCP_TOOLS_DENY_PATTERN",
+  );
+
   return {
     readOnlyMode,
     redmineUrl,
     redmineApiKey,
+    toolsAllowPattern,
+    toolsDenyPattern,
   };
 };
 
