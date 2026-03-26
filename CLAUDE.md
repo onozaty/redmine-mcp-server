@@ -24,11 +24,12 @@ This is a Model Context Protocol (MCP) server for Redmine that provides comprehe
 - **Configuration**: `src/config.ts`
   - Environment-based configuration loading
   - Read-only mode support via `REDMINE_MCP_READ_ONLY=true`
+  - Tool filtering via `REDMINE_MCP_TOOLS_ALLOW_PATTERN` and `REDMINE_MCP_TOOLS_DENY_PATTERN`
   - Requires `REDMINE_URL` and `REDMINE_API_KEY` environment variables
 
 - **Main Server**: `src/server.ts`
   - Registers all tools with read-only/write classification
-  - Implements conditional tool registration based on read-only mode
+  - Implements conditional tool registration based on configuration (read-only mode and regex filters)
   - Extensive tool registry covering all Redmine operations
 
 ### Code Generation Workflow
@@ -65,6 +66,8 @@ The server requires these environment variables:
 - `REDMINE_URL` - Base URL of the Redmine instance
 - `REDMINE_API_KEY` - API key for authentication
 - `REDMINE_MCP_READ_ONLY` - Optional, set to "true" to enable read-only mode
+- `REDMINE_MCP_TOOLS_ALLOW_PATTERN` - Optional, regex to allow only matching tools
+- `REDMINE_MCP_TOOLS_DENY_PATTERN` - Optional, regex to disable matching tools (takes priority over allow)
 
 ### Custom Fetch Integration
 The generated HTTP client uses a custom fetch implementation (`src/api/custom-fetch.ts`) which is automatically injected by the post-generation script.
