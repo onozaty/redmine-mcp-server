@@ -268,11 +268,20 @@ const server = new McpServer({
   version: packageJson.version,
 });
 
-// Track registered tools for statistics
-const registeredTools = new Map<string, ToolType>();
+// Track all tools for statistics
+const allTools = new Map<string, ToolType>();
+
+const isToolEnabled = (toolName: string, toolType: ToolType): boolean => {
+  if (config.readOnlyMode && toolType === ToolType.WRITE) return false;
+  if (config.toolsDenyPattern && config.toolsDenyPattern.test(toolName))
+    return false;
+  if (config.toolsAllowPattern && !config.toolsAllowPattern.test(toolName))
+    return false;
+  return true;
+};
 
 /**
- * Helper function to conditionally register tools based on read-only mode
+ * Helper function to conditionally register tools based on configuration
  */
 const registerTool = <Args extends ZodRawShape>(
   toolName: string,
@@ -282,10 +291,9 @@ const registerTool = <Args extends ZodRawShape>(
   handler: ToolCallback<Args>
 ) => {
   // Track tool registration for statistics
-  registeredTools.set(toolName, toolType);
+  allTools.set(toolName, toolType);
 
-  if (config.readOnlyMode && toolType === ToolType.WRITE) {
-    // Skip registration of write tools in read-only mode
+  if (!isToolEnabled(toolName, toolType)) {
     return;
   }
   server.tool(toolName, description, schemas, handler);
@@ -293,20 +301,25 @@ const registerTool = <Args extends ZodRawShape>(
 
 // Log server mode after all tools are registered
 const logServerMode = () => {
-  const readOnlyCount = Array.from(registeredTools.values()).filter(
-    (t) => t === ToolType.READ_ONLY
+  const toolEntries = Array.from(allTools.entries());
+  const enabledCount = toolEntries.filter(([name, type]) =>
+    isToolEnabled(name, type)
   ).length;
-  const writeCount = Array.from(registeredTools.values()).filter(
-    (t) => t === ToolType.WRITE
-  ).length;
+  const disabledCount = toolEntries.length - enabledCount;
 
+  console.error("Starting Redmine MCP Server");
   if (config.readOnlyMode) {
-    console.error("Starting Redmine MCP Server in READ-ONLY mode");
-    console.error(`Available tools: ${readOnlyCount} read-only operations`);
-    console.error(`Disabled tools: ${writeCount} write operations`);
-  } else {
-    console.error("Starting Redmine MCP Server in FULL mode");
-    console.error(`Available tools: ${readOnlyCount + writeCount} operations`);
+    console.error("  - Read-only mode: write operations disabled");
+  }
+  if (config.toolsAllowPattern) {
+    console.error(`  - Allow pattern: ${config.toolsAllowPattern.source}`);
+  }
+  if (config.toolsDenyPattern) {
+    console.error(`  - Deny pattern: ${config.toolsDenyPattern.source}`);
+  }
+  console.error(`Available tools: ${enabledCount} operations`);
+  if (disabledCount > 0) {
+    console.error(`Disabled tools: ${disabledCount} operations`);
   }
 };
 
