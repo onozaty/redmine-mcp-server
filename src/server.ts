@@ -10,8 +10,14 @@ import {
 
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import packageJson from "../package.json" assert { type: "json" };
+import { handleCliMetadataFlags } from "./cli.js";
 
 import { config } from "./config.js";
+
+const cliResult = handleCliMetadataFlags(process.argv, packageJson.version);
+if (cliResult.handled) {
+  process.exit(cliResult.exitCode);
+}
 
 // Tool classification enum
 enum ToolType {

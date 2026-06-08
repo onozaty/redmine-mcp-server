@@ -58,7 +58,18 @@ const loadConfig = (): ServerConfig => {
   };
 };
 
+let cachedConfig: ServerConfig | null = null;
+
 /**
  * Get current configuration
  */
-export const config = loadConfig();
+export const getConfig = (): ServerConfig => {
+  cachedConfig ??= loadConfig();
+  return cachedConfig;
+};
+
+export const config: ServerConfig = new Proxy({} as ServerConfig, {
+  get(_target, property: keyof ServerConfig) {
+    return getConfig()[property];
+  },
+});
