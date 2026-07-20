@@ -204,6 +204,7 @@ This MCP server comprehensively supports the functions provided by [Redmine's RE
 - **Files**: Upload and download files
 - **Attachments**: Upload, download files, and get thumbnails
 - **Queries**: Execute saved queries
+- **CRM (RedmineUP plugin)**: Manage contacts, deals, and notes (requires the third-party RedmineUP CRM plugin)
 - **Custom Fields**: Get and manage custom fields
 - **Roles**: Get and manage roles
 - **Trackers**: Get and manage trackers
@@ -267,6 +268,10 @@ The following tools are available (based on [Redmine REST API](https://www.redmi
 | Files | getFiles, createFile |
 | My Account | getMyAccount, updateMyAccount |
 | Journals | updateJournal |
+| CRM (RedmineUP plugin) | getContacts, getContact, createContact, updateContact, deleteContact, getDeals, getDeal, createDeal, updateDeal, deleteDeal, createNote, getDealStatuses, getDealCategories, getContactTags |
+
+> [!NOTE]
+> The **CRM** tools require the third-party [RedmineUP CRM plugin](https://www.redmineup.com/pages/help/crm) to be installed on the Redmine instance. On instances without the plugin they will simply return errors. If you don't use the plugin, you can hide the whole group with `REDMINE_MCP_TOOLS_DENY_PATTERN` (e.g. `(Contact|Deal|Note)`); conversely you can expose only the CRM tools with `REDMINE_MCP_TOOLS_ALLOW_PATTERN`.
 
 ## License
 

@@ -110,6 +110,10 @@ tags:
       url: https://www.redmine.org/projects/redmine/wiki/Rest_Journals?parent=Rest_api
   - name: Repositories
     description: Undocumented
+  - name: CRM
+    description: "RedmineUP CRM plugin (third-party). Requires the CRM plugin to be installed on the Redmine instance."
+    externalDocs:
+      url: https://www.redmineup.com/pages/help/crm
 externalDocs:
   description: Redmine API Official Developer Guide
   url: https://www.redmine.org/projects/redmine/wiki/Rest_api
@@ -3453,6 +3457,434 @@ paths:
       responses:
         "204":
           description: ""
+  /contacts.{format}:
+    get:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/listing-contacts-api
+      summary: List contacts
+      operationId: getContacts
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+        - name: project_id
+          in: query
+          schema:
+            type: string
+        - name: assigned_to_id
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: tags
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - contacts
+                properties:
+                  contacts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/crm_contact"
+                  total_count:
+                    type: integer
+                  offset:
+                    type: integer
+                  limit:
+                    type: integer
+    post:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/api-create-contact-related-with-issue
+      summary: Create contact
+      operationId: createContact
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contact
+              properties:
+                contact:
+                  $ref: "#/components/schemas/crm_contact_write"
+      responses:
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contact:
+                    $ref: "#/components/schemas/crm_contact"
+  /contacts/{contactId}.{format}:
+    get:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/listing-contacts-api
+      summary: Show contact
+      operationId: getContact
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/contact_id"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+        - name: include
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - notes
+                - contacts
+                - deals
+                - tickets
+          explode: false
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - contact
+                properties:
+                  contact:
+                    $ref: "#/components/schemas/crm_contact"
+    put:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/listing-contacts-api
+      summary: Update contact
+      operationId: updateContact
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/contact_id"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contact
+              properties:
+                contact:
+                  $ref: "#/components/schemas/crm_contact_write"
+      responses:
+        "204":
+          description: ""
+    delete:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/listing-contacts-api
+      summary: Delete contact
+      operationId: deleteContact
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/contact_id"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      responses:
+        "204":
+          description: ""
+  /deals.{format}:
+    get:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/rest-api-deals
+      summary: List deals
+      operationId: getDeals
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/offset"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+        - name: project_id
+          in: query
+          schema:
+            type: string
+        - name: contact_id
+          in: query
+          schema:
+            type: integer
+        - name: assigned_to_id
+          in: query
+          schema:
+            type: integer
+        - name: status_id
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - deals
+                properties:
+                  deals:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/crm_deal"
+                  total_count:
+                    type: integer
+                  offset:
+                    type: integer
+                  limit:
+                    type: integer
+    post:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/rest-api-deals
+      summary: Create deal
+      operationId: createDeal
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - deal
+              properties:
+                deal:
+                  $ref: "#/components/schemas/crm_deal_write"
+      responses:
+        "201":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deal:
+                    $ref: "#/components/schemas/crm_deal"
+  /deals/{dealId}.{format}:
+    get:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/rest-api-deals
+      summary: Show deal
+      operationId: getDeal
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/deal_id"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+        - name: include
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - notes
+          explode: false
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - deal
+                properties:
+                  deal:
+                    $ref: "#/components/schemas/crm_deal"
+    put:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/rest-api-deals
+      summary: Update deal
+      operationId: updateDeal
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/deal_id"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - deal
+              properties:
+                deal:
+                  $ref: "#/components/schemas/crm_deal_write"
+      responses:
+        "204":
+          description: ""
+    delete:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/rest-api-deals
+      summary: Delete deal
+      operationId: deleteDeal
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/deal_id"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      responses:
+        "204":
+          description: ""
+  /notes.{format}:
+    post:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/api-create-note-for-contact-with-attachment
+      summary: Create note
+      operationId: createNote
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - source_id
+                - source_type
+                - note
+              properties:
+                project_id:
+                  type: string
+                source_id:
+                  type: integer
+                source_type:
+                  type: string
+                  enum:
+                    - Contact
+                    - Deal
+                note:
+                  type: object
+                  required:
+                    - content
+                  properties:
+                    content:
+                      type: string
+                    type_id:
+                      type: integer
+                      nullable: true
+                    note_time:
+                      type: string
+      responses:
+        "201":
+          description: ""
+  /deal_statuses.{format}:
+    get:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/rest-api-deal-statuses
+      summary: List deal statuses
+      operationId: getDealStatuses
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - deal_statuses
+                properties:
+                  deal_statuses:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/crm_deal_status"
+  /contact_tags.{format}:
+    get:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/rest-api-contact-tags
+      summary: List contact tags
+      operationId: getContactTags
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - tags
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/crm_contact_tag"
+  /projects/{projectId}/deal_categories.{format}:
+    get:
+      tags:
+        - CRM
+      externalDocs:
+        url: https://www.redmineup.com/pages/help/crm/rest-api-deal-categories
+      summary: List deal categories
+      operationId: getDealCategories
+      parameters:
+        - $ref: "#/components/parameters/format"
+        - $ref: "#/components/parameters/project_id"
+        - $ref: "#/components/parameters/x_redmine_switch_user"
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - deal_categories
+                properties:
+                  deal_categories:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/crm_deal_category"
 components:
   securitySchemes:
     BasicAuth:
@@ -3608,6 +4040,18 @@ components:
       required: true
       schema:
         type: string
+    contact_id:
+      name: contactId
+      in: path
+      required: true
+      schema:
+        type: integer
+    deal_id:
+      name: dealId
+      in: path
+      required: true
+      schema:
+        type: integer
   schemas:
     id_name:
       type: object
@@ -4968,3 +5412,253 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/custom_field_value"
+    crm_address:
+      type: object
+      properties:
+        street1:
+          type: string
+          nullable: true
+        street2:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        region:
+          type: string
+          nullable: true
+        postcode:
+          type: string
+          nullable: true
+        country_code:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+    crm_contact:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        middle_name:
+          type: string
+        company:
+          type: string
+        job_title:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        skype_name:
+          type: string
+          nullable: true
+        birthday:
+          type: string
+          nullable: true
+        background:
+          type: string
+          nullable: true
+        is_company:
+          type: boolean
+        address:
+          $ref: "#/components/schemas/crm_address"
+        tags:
+          type: array
+          items:
+            type: string
+        assigned_to:
+          $ref: "#/components/schemas/id_name"
+        author:
+          $ref: "#/components/schemas/id_name"
+        visibility:
+          type: integer
+        custom_fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/custom_field_value"
+        created_on:
+          type: string
+          format: date-time
+        updated_on:
+          type: string
+          format: date-time
+    crm_contact_write:
+      type: object
+      description: "Writable contact fields. On create, first_name and project_id are required by the CRM plugin; on update, only the fields to change need to be sent."
+      properties:
+        project_id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        middle_name:
+          type: string
+        company:
+          type: string
+        job_title:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        website:
+          type: string
+        skype_name:
+          type: string
+        birthday:
+          type: string
+          format: date
+        background:
+          type: string
+        is_company:
+          type: boolean
+        assigned_to_id:
+          type: integer
+        visibility:
+          type: integer
+          enum:
+            - 0
+            - 1
+            - 2
+        tag_list:
+          type: string
+        address_attributes:
+          $ref: "#/components/schemas/crm_address"
+        custom_fields:
+          $ref: "#/components/schemas/custom_fields"
+    crm_deal:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: string
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        probability:
+          type: integer
+          nullable: true
+        due_date:
+          type: string
+          nullable: true
+        background:
+          type: string
+          nullable: true
+        price_type:
+          type: integer
+          nullable: true
+        duration:
+          type: integer
+          nullable: true
+        status:
+          $ref: "#/components/schemas/id_name"
+        category:
+          $ref: "#/components/schemas/id_name"
+        project:
+          $ref: "#/components/schemas/id_name"
+        contact:
+          $ref: "#/components/schemas/id_name"
+        assigned_to:
+          $ref: "#/components/schemas/id_name"
+        author:
+          $ref: "#/components/schemas/id_name"
+        custom_fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/custom_field_value"
+        created_on:
+          type: string
+          format: date-time
+        updated_on:
+          type: string
+          format: date-time
+    crm_deal_write:
+      type: object
+      description: "Writable deal fields. On create, name and project_id are required by the CRM plugin; on update, only the fields to change need to be sent."
+      properties:
+        project_id:
+          type: string
+        name:
+          type: string
+        contact_id:
+          type: integer
+        price:
+          type: string
+        currency:
+          type: string
+        probability:
+          type: integer
+        due_date:
+          type: string
+          format: date
+        background:
+          type: string
+        status_id:
+          type: integer
+        category_id:
+          type: integer
+        assigned_to_id:
+          type: integer
+        custom_fields:
+          $ref: "#/components/schemas/custom_fields"
+    crm_deal_status:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        is_default:
+          type: boolean
+        status_type:
+          type: integer
+        color:
+          type: integer
+        position:
+          type: integer
+    crm_deal_category:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    crm_contact_tag:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: integer
+          nullable: true

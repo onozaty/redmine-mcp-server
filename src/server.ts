@@ -107,6 +107,24 @@ import {
   updateWikiPageHandler,
 } from "./__generated__/handlers.js";
 
+// Import generated CRM handlers (RedmineUP CRM plugin)
+import {
+  createContactHandler,
+  createDealHandler,
+  createNoteHandler,
+  deleteContactHandler,
+  deleteDealHandler,
+  getContactHandler,
+  getContactsHandler,
+  getContactTagsHandler,
+  getDealCategoriesHandler,
+  getDealHandler,
+  getDealsHandler,
+  getDealStatusesHandler,
+  updateContactHandler,
+  updateDealHandler,
+} from "./__generated__/handlers.js";
+
 // Import generated schemas
 import {
   addRelatedIssueBody,
@@ -240,6 +258,33 @@ import {
   updateVersionParams,
   updateWikiPageBody,
   updateWikiPageParams,
+} from "./__generated__/tool-schemas.zod.js";
+
+// Import generated CRM schemas (RedmineUP CRM plugin)
+import {
+  createContactBody,
+  createContactParams,
+  createDealBody,
+  createDealParams,
+  createNoteBody,
+  createNoteParams,
+  deleteContactParams,
+  deleteDealParams,
+  getContactParams,
+  getContactQueryParams,
+  getContactsParams,
+  getContactsQueryParams,
+  getContactTagsParams,
+  getDealCategoriesParams,
+  getDealParams,
+  getDealQueryParams,
+  getDealsParams,
+  getDealsQueryParams,
+  getDealStatusesParams,
+  updateContactBody,
+  updateContactParams,
+  updateDealBody,
+  updateDealParams,
 } from "./__generated__/tool-schemas.zod.js";
 
 // Import custom attachment functionality
@@ -981,6 +1026,110 @@ registerTool(
   ToolType.READ_ONLY,
   { pathParams: downloadThumbnailAsBase64ContentParams },
   downloadThumbnailAsBase64ContentHandler
+);
+
+// Register RedmineUP CRM plugin tools
+// These require the third-party RedmineUP CRM plugin to be installed on the
+// Redmine instance. On instances without the plugin they simply return errors.
+// They can be filtered as a group via REDMINE_MCP_TOOLS_ALLOW_PATTERN /
+// REDMINE_MCP_TOOLS_DENY_PATTERN (e.g. "(Contact|Deal|Note)").
+registerTool(
+  "getContacts",
+  "List CRM contacts (RedmineUP CRM plugin)",
+  ToolType.READ_ONLY,
+  { pathParams: getContactsParams, queryParams: getContactsQueryParams },
+  getContactsHandler
+);
+registerTool(
+  "getContact",
+  "Show CRM contact (RedmineUP CRM plugin)",
+  ToolType.READ_ONLY,
+  { pathParams: getContactParams, queryParams: getContactQueryParams },
+  getContactHandler
+);
+registerTool(
+  "createContact",
+  "Create CRM contact (RedmineUP CRM plugin)",
+  ToolType.WRITE,
+  { pathParams: createContactParams, bodyParams: createContactBody },
+  createContactHandler
+);
+registerTool(
+  "updateContact",
+  "Update CRM contact (RedmineUP CRM plugin)",
+  ToolType.WRITE,
+  { pathParams: updateContactParams, bodyParams: updateContactBody },
+  updateContactHandler
+);
+registerTool(
+  "deleteContact",
+  "Delete CRM contact (RedmineUP CRM plugin)",
+  ToolType.WRITE,
+  { pathParams: deleteContactParams },
+  deleteContactHandler
+);
+registerTool(
+  "getDeals",
+  "List CRM deals (RedmineUP CRM plugin)",
+  ToolType.READ_ONLY,
+  { pathParams: getDealsParams, queryParams: getDealsQueryParams },
+  getDealsHandler
+);
+registerTool(
+  "getDeal",
+  "Show CRM deal (RedmineUP CRM plugin)",
+  ToolType.READ_ONLY,
+  { pathParams: getDealParams, queryParams: getDealQueryParams },
+  getDealHandler
+);
+registerTool(
+  "createDeal",
+  "Create CRM deal (RedmineUP CRM plugin)",
+  ToolType.WRITE,
+  { pathParams: createDealParams, bodyParams: createDealBody },
+  createDealHandler
+);
+registerTool(
+  "updateDeal",
+  "Update CRM deal (RedmineUP CRM plugin)",
+  ToolType.WRITE,
+  { pathParams: updateDealParams, bodyParams: updateDealBody },
+  updateDealHandler
+);
+registerTool(
+  "deleteDeal",
+  "Delete CRM deal (RedmineUP CRM plugin)",
+  ToolType.WRITE,
+  { pathParams: deleteDealParams },
+  deleteDealHandler
+);
+registerTool(
+  "createNote",
+  "Create a CRM note on a contact or deal (RedmineUP CRM plugin)",
+  ToolType.WRITE,
+  { pathParams: createNoteParams, bodyParams: createNoteBody },
+  createNoteHandler
+);
+registerTool(
+  "getDealStatuses",
+  "List CRM deal statuses (RedmineUP CRM plugin)",
+  ToolType.READ_ONLY,
+  { pathParams: getDealStatusesParams },
+  getDealStatusesHandler
+);
+registerTool(
+  "getDealCategories",
+  "List CRM deal categories for a project (RedmineUP CRM plugin)",
+  ToolType.READ_ONLY,
+  { pathParams: getDealCategoriesParams },
+  getDealCategoriesHandler
+);
+registerTool(
+  "getContactTags",
+  "List CRM contact tags (RedmineUP CRM plugin)",
+  ToolType.READ_ONLY,
+  { pathParams: getContactTagsParams },
+  getContactTagsHandler
 );
 
 
