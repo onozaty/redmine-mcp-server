@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/onozaty-redmine-mcp-server-badge.png)](https://mseep.ai/app/onozaty-redmine-mcp-server)
+
 # Redmine MCP Server
 
 Model Context Protocol (MCP) server for Redmine that provides comprehensive access to the Redmine REST API.
