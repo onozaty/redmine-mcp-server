@@ -110,6 +110,11 @@ jobs:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
 
+      # npm >= 11.5.1 is required for trusted publishing (OIDC); the npm
+      # bundled with Node 22 is 10.x and cannot exchange the id-token.
+      - name: Update npm
+        run: npm install -g npm@latest
+
       - name: Publish to npm
         run: npm publish --provenance --access public
 
