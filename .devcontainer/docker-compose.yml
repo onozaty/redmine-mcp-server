@@ -6,6 +6,8 @@ services:
     volumes:
       - ../..:/workspaces:cached
       - mcp-node-modules:/workspaces/app/node_modules
+      - claude-config:/home/node/.claude
+      - gh-config:/home/node/.config/gh
     command: sleep infinity
     depends_on:
       - redmine
@@ -33,3 +35,5 @@ volumes:
   mcp-node-modules:
   redmine-files:
   postgres-data:
+  claude-config:
+  gh-config:
