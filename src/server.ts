@@ -296,7 +296,16 @@ const registerTool = <Args extends ZodRawShape>(
   if (!isToolEnabled(toolName, toolType)) {
     return;
   }
-  server.tool(toolName, description, schemas, handler);
+  // Expose the read-only classification on the wire: MCP clients use
+  // annotations.readOnlyHint to decide which tools may run without asking the
+  // user (an absent hint defaults to false, i.e. treated as a write).
+  server.tool(
+    toolName,
+    description,
+    schemas,
+    { readOnlyHint: toolType === ToolType.READ_ONLY },
+    handler
+  );
 };
 
 // Log server mode after all tools are registered

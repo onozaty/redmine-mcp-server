@@ -61,6 +61,8 @@ Tools are registered with a classification system:
 
 The `registerTool` helper function automatically excludes write operations when `config.readOnlyMode` is enabled.
 
+The same classification is exposed to clients: `registerTool` passes `annotations: { readOnlyHint: ... }` to `server.tool()`, so `tools/list` reports whether each tool modifies data.
+
 ### Environment Configuration
 The server requires these environment variables:
 - `REDMINE_URL` - Base URL of the Redmine instance

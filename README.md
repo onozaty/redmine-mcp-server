@@ -25,6 +25,7 @@ https://github.com/user-attachments/assets/8f551082-6982-4513-8fe7-b0f111be982d
 - 📋 **Comprehensive API Coverage**: Supports all functions available in Redmine's REST API
 - 🔒 **Read-Only Mode**: Supports safe data reference mode
 - 🔧 **Tool Filtering**: Control which tools are available using regex patterns
+- 🏷️ **Tool Annotations**: Declares `readOnlyHint` so clients can tell read operations from write ones
 
 ## Prerequisites
 
@@ -238,6 +239,10 @@ When both are set, deny takes priority. These can also be combined with `REDMINE
   "REDMINE_MCP_TOOLS_DENY_PATTERN": "^(delete|archive)"
 }
 ```
+
+### Tool Annotations
+
+Every tool declares the `readOnlyHint` annotation, so clients do not have to guess from the tool name whether a call modifies data: it is `true` for read operations (`getIssues`, `getProjects`, ...) and `false` for the ones that create, update or delete. Clients that honour the annotation can, for instance, run read operations without asking the user for confirmation.
 
 ### Available Tools
 
