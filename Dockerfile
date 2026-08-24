@@ -1,8 +1,11 @@
 # Stage 1: Base
-FROM node:20-slim AS base
+FROM node:22-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable pnpm
+# Pin pnpm to the packageManager field so builds don't drift to a newer release
+WORKDIR /app
+COPY package.json ./
+RUN corepack enable && corepack install
 
 # Stage 2: Build
 FROM base AS build
