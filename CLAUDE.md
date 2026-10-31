@@ -37,7 +37,7 @@ This is a Model Context Protocol (MCP) server for Redmine that provides comprehe
 1. **OpenAPI Specification**: `redmine-openapi.yaml` defines the Redmine API
 2. **Orval Configuration**: `orval.config.ts` configures code generation
 3. **Generated Code**: `pnpm gen` creates handlers and schemas in `src/__generated__/`
-4. **Post-Processing**: `post-generate.js` adds custom fetch import to generated HTTP client
+4. **Post-Processing**: `post-generate.js` adds custom fetch import to generated HTTP client and removes an unused import Orval generates in `handlers.ts`
 
 ## Development Commands
 
@@ -47,6 +47,15 @@ pnpm gen
 
 # Build the project (includes generation)
 pnpm build
+
+# Typecheck the sources and tests (tsdown does not typecheck)
+pnpm typecheck
+
+# Run unit tests against a mock Redmine (requires pnpm build)
+pnpm test
+
+# Run integration tests against a real Redmine (requires pnpm build)
+REDMINE_TEST_URL=http://redmine:3000 REDMINE_TEST_API_KEY=... pnpm test:integration
 
 # Build for publishing
 pnpm prepublishOnly
@@ -87,3 +96,10 @@ The server runs as an MCP server over stdio. Test it by:
 1. Building the project: `pnpm build`
 2. Running the binary: `./dist/server.mjs`
 3. Providing required environment variables
+
+### Automated Tests
+
+Tests use vitest and run the built `dist/server.mjs` over stdio with the MCP SDK client.
+
+- **Unit tests** (`tests/unit/`): point the server at a local mock HTTP server (`tests/helpers/mock-redmine.ts`) and check tool listing/filtering, the requests sent to Redmine and how responses are returned. No Redmine is needed.
+- **Integration tests** (`tests/integration/`): run against a real Redmine. Each test file creates and deletes its own project. The target is given by `REDMINE_TEST_URL` / `REDMINE_TEST_API_KEY`, not `REDMINE_URL` / `REDMINE_API_KEY`, so tests never write to an everyday instance by accident. In the dev container, use the `redmine` service with the REST API enabled; in CI, `.github/scripts/start-redmine.sh` starts a disposable Redmine and prints its admin API key.

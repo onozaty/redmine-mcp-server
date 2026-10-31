@@ -12,7 +12,10 @@
   ],
   "scripts": {
     "gen": "rm -rf src/__generated__ && orval && node post-generate.js",
-    "build": "pnpm gen && tsdown"
+    "build": "pnpm gen && tsdown",
+    "typecheck": "tsc --noEmit && tsc -p tests",
+    "test": "vitest run --project unit",
+    "test:integration": "vitest run --project integration"
   },
   "repository": {
     "type": "git",
@@ -30,10 +33,11 @@
   },
   "homepage": "https://github.com/onozaty/redmine-mcp-server#readme",
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^22.20.5",
     "orval": "^7.10.0",
-    "tsdown": "^0.12.9",
-    "typescript": "^5.8.3"
+    "tsdown": "^0.23.4",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.15.0",

@@ -19,7 +19,7 @@ export async function uploadBase64ContentToRedmine(
   }
 
   // Convert Base64 to Buffer
-  let fileBuffer: Buffer;
+  let fileBuffer: Buffer<ArrayBuffer>;
   try {
     fileBuffer = Buffer.from(content, "base64");
   } catch (error) {
