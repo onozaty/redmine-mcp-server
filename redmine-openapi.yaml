@@ -2315,6 +2315,12 @@ paths:
                       type: string
                     version:
                       type: integer
+                    parent_title:
+                      type: string
+                      description: >-
+                        Parent Wiki page title. Set a title to assign or change the parent,
+                        an empty string to remove it, or omit to preserve the current parent.
+                        Existing pages require rename_wiki_pages permission; read back to verify.
       responses:
         "201":
           description: ""
