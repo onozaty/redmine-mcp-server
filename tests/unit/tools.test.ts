@@ -1,6 +1,7 @@
 import { afterEach, beforeAll, afterAll, describe, expect, it } from "vitest";
 import { McpServer, startServer } from "../helpers/mcp";
 import { MockRedmine, startMockRedmine } from "../helpers/mock-redmine";
+import packageJson from "../../package.json" with { type: "json" };
 
 let redmine: MockRedmine;
 let server: McpServer | undefined;
@@ -25,6 +26,14 @@ const start = async (env: Record<string, string> = {}) => {
 };
 
 const toolNames = async (s: McpServer) => (await s.client.listTools()).tools.map((t) => t.name);
+
+describe("server info", () => {
+  it("reports the package version", async () => {
+    const s = await start();
+
+    expect(s.client.getServerVersion()?.version).toBe(packageJson.version);
+  });
+});
 
 describe("tools/list", () => {
   it("marks read-only and write tools with readOnlyHint", async () => {
